@@ -24,9 +24,8 @@ public class JobController {
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String index(Model model, int id) {
 
-        // Compoleted #1
-        Job job = jobData.findById(id);
-        model.addAttribute(job);
+        /* Completed #1 */
+        model.addAttribute(jobData.findById(id));
         return "job-detail";
     }
 
@@ -39,11 +38,20 @@ public class JobController {
     @RequestMapping(value = "add", method = RequestMethod.POST)
     public String add(Model model, @Valid JobForm jobForm, Errors errors) {
 
-        // TODO #6 - Validate the JobForm model, and if valid, create a
-        // new Job and add it to the jobData data store. Then
-        // redirect to the job detail view for the new Job.
+        /* Completed #6: - Validate JobForm model >
+                          -create a new Job >
+                           -add to jobData data store >
+                           -redirect to job detail view for new Job. */
+        if (errors.hasErrors()){
+            return "new-job";
+        }
 
-        return "";
+        Job job =  new Job(jobForm.getName(), jobData.getEmployers().findById(jobForm.getEmployerId()),
+                jobData.getLocations().findById(jobForm.getLocationId()), jobData.getPositionTypes().findById(jobForm.getPositionTypeId()),
+                jobData.getCoreCompetencies().findById(jobForm.getCoreCompetencyId()));
+        jobData.add(job);
+
+        return "redirect:/job?id=" + job.getId();
 
     }
 }
